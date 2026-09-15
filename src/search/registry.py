@@ -26,6 +26,11 @@ _VARIANTS = [
         "Sentence-transformers + BM25, in-memory, pełne opisy szkoleń",
         "search.variants.local_memory",
     ),
+    Variant(
+        "openai_memory",
+        "OpenAI embeddings + in-memory, pełne opisy szkoleń",
+        "search.variants.openai_memory",
+    ),
 ]
 
 VARIANTS: dict[str, Variant] = {v.name: v for v in _VARIANTS}
