@@ -11,5 +11,7 @@ class Settings(BaseSettings):
     index_path: str = "data_rag/index.json"
     openai_index_path: str = "data_rag/index_openai.json"
     szkolenia_parquet: str = "data_rag/szkolenia.parquet"
+    chroma_path: str = "data_rag/chroma"
+    programy_dir: str = "data_rag/programy"
 
 settings = Settings()
