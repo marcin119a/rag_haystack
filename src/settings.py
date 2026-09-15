@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o-mini"
     embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     openai_embedding_model: str = "text-embedding-3-small"  
-    index_path: str = "data_rag/index"
+    index_path: str = "data_rag/index.json"
     szkolenia_parquet: str = "data_rag/szkolenia.parquet"
 
 settings = Settings()
