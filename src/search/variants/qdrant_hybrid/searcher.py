@@ -5,7 +5,6 @@ from haystack.components.embedders import OpenAITextEmbedder
 from haystack_integrations.components.embedders.fastembed import FastembedSparseTextEmbedder
 from haystack_integrations.components.embedders.sentence_transformers import SentenceTransformersTextEmbedder
 from haystack_integrations.components.retrievers.qdrant import QdrantHybridRetriever
-from haystack.utils import Secret
 
 from search.base import IndexNotReadyError, Searcher
 from search.variants.qdrant_hybrid.indexer import COLLECTION, MODEL, SPARSE_KWARGS, SPARSE_MODEL, connect_store, API_KEY
