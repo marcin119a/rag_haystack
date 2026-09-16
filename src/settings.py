@@ -13,5 +13,6 @@ class Settings(BaseSettings):
     szkolenia_parquet: str = "data_rag/szkolenia.parquet"
     chroma_path: str = "data_rag/chroma"
     programy_dir: str = "data_rag/programy"
+    qdrant_url: str = "http://localhost:6333"
 
 settings = Settings()

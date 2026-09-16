@@ -38,5 +38,5 @@ class OpenAiMemorySearcher(Searcher):
         return result["joiner"]["documents"]
 
 
-def build_searcher() -> OpenAiMemorySearcher:
-    return OpenAiMemorySearcher()
+def build_searcher(**kwargs) -> OpenAiMemorySearcher:
+    return OpenAiMemorySearcher(**kwargs)

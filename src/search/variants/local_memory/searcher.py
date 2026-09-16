@@ -15,7 +15,7 @@ from search.variants.local_memory.indexer import INDEX_PATH, MODEL
 
 
 class LocalMemorySearcher(Searcher):
-    def __init__(self) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         if not INDEX_PATH.exists():
             raise IndexNotReadyError(
                 f"Brak indeksu {INDEX_PATH}. Zbuduj go: uv run search index local_memory"
@@ -39,5 +39,5 @@ class LocalMemorySearcher(Searcher):
         return result["joiner"]["documents"]
 
 
-def build_searcher() -> LocalMemorySearcher:
-    return LocalMemorySearcher()
+def build_searcher(**kwargs) -> LocalMemorySearcher:
+    return LocalMemorySearcher(**kwargs)

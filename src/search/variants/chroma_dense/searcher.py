@@ -43,5 +43,5 @@ class ChromaDenseSearcher(Searcher):
         return result["joiner"]["documents"]
 
 
-def build_searcher() -> ChromaDenseSearcher:
-    return ChromaDenseSearcher()
+def build_searcher(**kwargs) -> ChromaDenseSearcher:
+    return ChromaDenseSearcher(**kwargs)

@@ -36,6 +36,11 @@ _VARIANTS = [
         "Sentence-transformers + Chroma, pełne opisy szkoleń",
         "search.variants.chroma_dense",
     ),
+    Variant(
+        "qdrant_hybrid",
+        "Sentence-transformers + Fastembed + Qdrant, hybrydowy retriever",
+        "search.variants.qdrant_hybrid",
+    ),
 ]
 
 VARIANTS: dict[str, Variant] = {v.name: v for v in _VARIANTS}
