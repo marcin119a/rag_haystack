@@ -16,5 +16,7 @@ class Settings(BaseSettings):
     qdrant_url: str = "http://localhost:6333"
     qdrant_collection: str = "szkolenia_chunki"
     embedding_model_dimension: int = 1536
+    qdrant_collection_pdf: str = "programy_pdf_chunki"
+    programy_pdf_dir: str = "data_rag/pdfy"
 
 settings = Settings()

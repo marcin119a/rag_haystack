@@ -7,6 +7,8 @@ import unicodedata
 from haystack.components.preprocessors import RecursiveDocumentSplitter
 import re
 from dataclasses import replace
+from haystack.components.converters.pypdf import PyPDFToDocument
+
 
 
 def load_course_docs() -> list[Document]:
@@ -41,6 +43,28 @@ def load_program_docs() -> list[Document]:
             "plik": path.name,
         }
         docs.append(Document(content=path.read_text(encoding="utf-8"), meta=meta))
+    return docs
+
+
+def load_program_pdfs() -> list[Document]:
+    courses = pd.read_parquet(settings.szkolenia_parquet)
+    courses["stem"] = courses["plik"].str.removesuffix(".md")
+    courses = courses.set_index("stem")
+
+    paths = sorted(Path(settings.programy_pdf_dir).glob("*.pdf"))
+    converted = PyPDFToDocument().run(sources=paths)["documents"]
+
+    docs = []
+    for path, doc in zip(paths, converted):
+        row = courses.loc[unicodedata.normalize("NFC", path.stem)]
+        meta = {
+            "nazwa": row.nazwa,
+            "kategoria": row.kategoria,
+            "dni": int(row.dni),
+            "pdf_url": row.pdf_url,
+            "plik": row.plik,
+        }
+        docs.append(Document(content=doc.content, meta=meta))
     return docs
 
 

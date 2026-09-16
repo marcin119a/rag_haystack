@@ -41,6 +41,11 @@ _VARIANTS = [
         "Sentence-transformers + Fastembed + Qdrant, hybrydowy retriever",
         "search.variants.qdrant_hybrid",
     ),
+    Variant(
+        "qdrant_pdf",
+        "OpenAI embeddings + Fastembed + Qdrant, hybrydowy retriever dla PDF",
+        "search.variants.qdrant_pdf",
+    ),
 ]
 
 VARIANTS: dict[str, Variant] = {v.name: v for v in _VARIANTS}
