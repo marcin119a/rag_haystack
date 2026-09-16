@@ -16,8 +16,8 @@ class Variant:
     def indexer(self) -> Indexer:
         return import_module(f"{self.module}.indexer").build_indexer()
 
-    def searcher(self) -> Searcher:
-        return import_module(f"{self.module}.searcher").build_searcher()
+    def searcher(self, **kwargs) -> Searcher:
+        return import_module(f"{self.module}.searcher").build_searcher(**kwargs)
 
 
 _VARIANTS = [
