@@ -39,7 +39,8 @@ GRIDS: dict[str, list[tuple[str, dict]]] = {
     "qdrant_hybrid": [
         ("rrf sparse 40% / dense 60% (domyślne)", {}),
         ("rrf sparse 60% / dense 40%", {"rrf_weights": [0.6, 0.4]}),
-        ("rrf sparse 20% / dense 80%", {"rrf_weights": [0.2, 0.8]}),
+        ("rrf sparse 20% / dense 80%", {"rrf_weights": [0.2, 0.8], "top_k": 10}),
+        ("rrf sparse 20% / dense 80%", {"rrf_weights": [0.2, 0.8], "top_k": 5}),
         ("rrf równe wagi", {"rrf_weights": [0.5, 0.5]}),
         ("top_k=15", {"top_k": 15}),
     ],
