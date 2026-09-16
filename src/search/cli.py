@@ -12,6 +12,10 @@ import sys
 
 from search.base import IndexNotReadyError
 from search.registry import VARIANTS, get
+from search.eval.runner import EvalResult, evaluate
+from search.eval.qrels import QUERIES
+
+
 
 
 def cmd_list(_args: argparse.Namespace) -> None:
@@ -26,6 +30,42 @@ def cmd_index(args: argparse.Namespace) -> None:
         print(f"Indeks wariantu {variant.name!r} już istnieje (użyj --force, żeby przebudować).")
         return
     indexer.build()
+
+
+def _print_eval_result(result: EvalResult) -> None:
+    print(f"[{result.variant}] MRR={result.mrr:.3f}  NDCG@{result.k}={result.mean_ndcg:.3f}")
+    for r in result.per_query:
+        top = r.ranked[0] if r.ranked else "(brak wyników)"
+        print(f"  RR={r.reciprocal_rank:.3f}  NDCG@{result.k}={r.ndcg:.3f}  {r.query!r}  -> {top!r}")
+
+
+
+def cmd_eval(args: argparse.Namespace) -> None:
+    if not args.all and not args.wariant:
+        sys.exit("Podaj wariant albo użyj --all.")
+
+    variants = list(VARIANTS.values()) if args.all else [get(args.wariant)]
+    results = []
+    for variant in variants:
+        try:
+            searcher = variant.searcher()
+        except IndexNotReadyError as e:
+            print(f"[{variant.name}] pominięto: {e}")
+            continue
+        except Exception as e:  # np. Qdrant/Chroma niedostępne — nie przerywaj oceny reszty wariantów
+            if not args.all:
+                raise
+            print(f"[{variant.name}] pominięto: {e!r}")
+            continue
+        result = evaluate(variant.name, searcher, QUERIES, k=args.k)
+        _print_eval_result(result)
+        results.append(result)
+        print()
+
+    if args.all and len(results) > 1:
+        print(f"Porównanie (na {len(QUERIES)} zapytaniach):")
+        for result in sorted(results, key=lambda r: r.mrr, reverse=True):
+            print(f"  {result.variant:15} MRR={result.mrr:.3f}  NDCG@{result.k}={result.mean_ndcg:.3f}")
 
 
 def cmd_search(args: argparse.Namespace) -> None:
@@ -63,6 +103,12 @@ def main() -> None:
     p_search.add_argument("wariant", choices=sorted(VARIANTS))
     p_search.add_argument("zapytanie", nargs="*")
     p_search.set_defaults(func=cmd_search)
+
+    p_eval = sub.add_parser("eval", help="Oceń trafność wariantu metrykami MRR/NDCG@k")
+    p_eval.add_argument("wariant", nargs="?", choices=sorted(VARIANTS))
+    p_eval.add_argument("--all", action="store_true", help="Oceń wszystkie warianty i porównaj wyniki")
+    p_eval.add_argument("--k", type=int, default=5, help="Głębokość NDCG@k (domyślnie 5)")
+    p_eval.set_defaults(func=cmd_eval)
 
     args = parser.parse_args()
     args.func(args)
