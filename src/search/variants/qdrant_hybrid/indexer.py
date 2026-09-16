@@ -5,23 +5,25 @@ import sys
 
 from haystack.document_stores.types import DuplicatePolicy
 from haystack_integrations.components.embedders.fastembed import FastembedSparseDocumentEmbedder
-from haystack_integrations.components.embedders.sentence_transformers import SentenceTransformersDocumentEmbedder
+from haystack.components.embedders import OpenAIDocumentEmbedder
 from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
 from sentence_transformers import SentenceTransformer
+from haystack.utils import Secret
 
 from search.base import Indexer
 from search.loaders import load_program_docs, split_program_sections
 from settings import settings
 
-MODEL = settings.embedding_model
+MODEL = settings.openai_embedding_model
 SPARSE_MODEL = "Qdrant/bm25"
 SPARSE_KWARGS = {"disable_stemmer": True}
-COLLECTION = "szkolenia_chunki"
+COLLECTION = settings.qdrant_collection
+API_KEY = Secret.from_token(settings.openai_api_key)
 
 
 def connect_store() -> QdrantDocumentStore:
     # Wymiar wektora gęstego zależy od modelu — liczymy go raz, zamiast wpisywać na sztywno.
-    embedding_dim = SentenceTransformer(MODEL).get_sentence_embedding_dimension()
+    embedding_dim = settings.embedding_model_dimension
     return QdrantDocumentStore(
         url=settings.qdrant_url,
         index=COLLECTION,
@@ -50,7 +52,7 @@ class QdrantHybridIndexer(Indexer):
             print(f"Kolekcja {COLLECTION} jest już zaindeksowana.", flush=True)
             return
 
-        doc_embedder = SentenceTransformersDocumentEmbedder(model=MODEL)
+        doc_embedder = OpenAIDocumentEmbedder(api_key=API_KEY, model=MODEL)
         doc_embedder.warm_up()
         sparse_doc_embedder = FastembedSparseDocumentEmbedder(model=SPARSE_MODEL, model_kwargs=SPARSE_KWARGS)
         sparse_doc_embedder.warm_up()

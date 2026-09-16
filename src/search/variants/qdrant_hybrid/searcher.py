@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from haystack import Document, Pipeline
+from haystack.components.embedders import OpenAITextEmbedder
 from haystack_integrations.components.embedders.fastembed import FastembedSparseTextEmbedder
 from haystack_integrations.components.embedders.sentence_transformers import SentenceTransformersTextEmbedder
 from haystack_integrations.components.retrievers.qdrant import QdrantHybridRetriever
+from haystack.utils import Secret
 
 from search.base import IndexNotReadyError, Searcher
-from search.variants.qdrant_hybrid.indexer import COLLECTION, MODEL, SPARSE_KWARGS, SPARSE_MODEL, connect_store
+from search.variants.qdrant_hybrid.indexer import COLLECTION, MODEL, SPARSE_KWARGS, SPARSE_MODEL, connect_store, API_KEY
+from settings import settings
 
 
 class QdrantHybridSearcher(Searcher):
@@ -23,7 +26,7 @@ class QdrantHybridSearcher(Searcher):
 
     def _create_pipeline(self) -> Pipeline:
         # Te same modele co w indexer.py — zapytanie musi być zembedowane tak samo jak fragmenty.
-        text_embedder = SentenceTransformersTextEmbedder(model=MODEL)
+        text_embedder = OpenAITextEmbedder(api_key=API_KEY, model=MODEL)
         text_embedder.warm_up()
         sparse_text_embedder = FastembedSparseTextEmbedder(model=SPARSE_MODEL, model_kwargs=SPARSE_KWARGS)
         sparse_text_embedder.warm_up()

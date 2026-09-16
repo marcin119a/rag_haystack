@@ -14,5 +14,7 @@ class Settings(BaseSettings):
     chroma_path: str = "data_rag/chroma"
     programy_dir: str = "data_rag/programy"
     qdrant_url: str = "http://localhost:6333"
+    qdrant_collection: str = "szkolenia_chunki"
+    embedding_model_dimension: int = 1536
 
 settings = Settings()
