@@ -14,6 +14,7 @@ from settings import settings
 class QdrantHybridSearcher(Searcher):
     def __init__(self, *, top_k: int = 10, rrf_weights: list[float] = (0.4, 0.6)) -> None:
         # Parametry query-time (nie wymagają przebudowy indeksu) — patrz search.eval.optimize.
+        # Default rrf_weights: bm25 40% / dense 60%"
         self._store = connect_store()
         if self._store.count_documents() == 0:
             raise IndexNotReadyError(
