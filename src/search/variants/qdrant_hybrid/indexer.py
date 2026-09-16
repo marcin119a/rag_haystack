@@ -45,7 +45,7 @@ class QdrantHybridIndexer(Indexer):
         if not docs:
             sys.exit(f"Brak plików .md w {settings.programy_dir} (rozpakuj data_rag/programy.zip).")
 
-        chunks = split_program_sections(docs)
+        chunks = split_program_sections(docs, split_length=400, split_overlap=50)
         print(f"{len(docs)} plików -> {len(chunks)} fragmentów", flush=True)
 
         if self.store.count_documents() == len({chunk.id for chunk in chunks}):
