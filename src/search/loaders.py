@@ -5,6 +5,8 @@ from settings import settings
 from pathlib import Path
 import unicodedata
 from haystack.components.preprocessors import RecursiveDocumentSplitter
+import re
+from dataclasses import replace
 
 
 def load_course_docs() -> list[Document]:
@@ -65,4 +67,52 @@ def recursive_split(docs: list[Document], split_length: int = 1000, split_overla
         title = chunk.meta["nazwa"]
         if not chunk.content.lstrip("# ").startswith(title):
             chunk.content = f"{title}\n\n{chunk.content}"
+    return chunks
+
+
+def normalize_markdown(text: str) -> str:
+    text = re.sub(r"^\*\*(#+ .+?)\*\*$", r"\1", text, flags=re.MULTILINE)
+    text = text.replace(r"\.", ".")
+
+    text = re.sub(r"(?m)^(\d+)\.\s+(.+)$", r"## \1. \2", text)
+    text = re.sub(r"(?<!\n)\n(?!\n|[a-z]\.\s|##\s)", " ", text)
+
+    return text
+
+
+def split_main_sections(text: str) -> list[str]:
+    sections = []
+    for section in re.split(r"(?=^## \d+\.)", text, flags=re.MULTILINE):
+        stripped = section.strip()
+        if re.match(r"^## \d+\.", stripped):
+            sections.append(stripped)
+    return sections
+
+
+def split_program_sections(
+    docs: list[Document], split_length: int = 1200, split_overlap: int = 100
+) -> list[Document]:
+    splitter = RecursiveDocumentSplitter(
+        split_length=split_length,
+        split_overlap=split_overlap,
+        split_unit="char",
+        separators=["\n\n", "\n", ". ", " ", ""],
+    )
+    splitter.warm_up()
+
+    chunks: list[Document] = []
+    for doc in docs:
+        text = normalize_markdown(doc.content)
+        for section in split_main_sections(text):
+            section_doc = Document(content=section, meta=doc.meta.copy())
+            if len(section) <= split_length:
+                chunks.append(section_doc)
+            else:
+                chunks.extend(splitter.run(documents=[section_doc])["documents"])
+
+    for i, chunk in enumerate(chunks):
+        title = chunk.meta["nazwa"]
+        if not chunk.content.startswith(title):
+            chunks[i] = replace(chunk, id="", content=f"{title}\n\n{chunk.content}")
+
     return chunks
