@@ -1,17 +1,18 @@
 
 from agno.os import AgentOS
-from agno.tracing import setup_tracing
 
 from agents.course.agent import catalog_agent
 from agents.triage.agent import triage_agent
+from agents.continuation.agent import continuation_agent
 from agents.workflow import db, workflow
+from agno.tracing import setup_tracing
 
 agent_os = AgentOS(
     id="doradca-szkoleniowy-os",
     name="Doradca szkoleniowy",
     description="Triage -> Catalog/Continuation: control plane, sesje i evale w jednym miejscu.",
     db=db,
-    agents=[triage_agent, catalog_agent],
+    agents=[triage_agent, catalog_agent, continuation_agent],
     workflows=[workflow]
 )
 

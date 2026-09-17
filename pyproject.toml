@@ -22,6 +22,7 @@ dependencies = [
 
 [project.scripts]
 search = "search.cli:main"
+agents-eval = "agents.eval.cli:main"
 
 [build-system]
 requires = ["hatchling"]

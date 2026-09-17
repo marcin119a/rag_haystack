@@ -4,6 +4,7 @@ from agno.workflow import Router, Step, StepInput, Workflow
 
 from agents.course.agent import catalog_agent
 from agents.triage.agent import triage_agent
+from agents.continuation.agent import continuation_agent
 from settings import settings
 
 db = SqliteDb(db_file=settings.agent_db_path)
@@ -26,7 +27,7 @@ workflow = Workflow(
             selector=_select_specialist,
             choices=[
                 Step(name="Catalog", agent=catalog_agent),
-                # @todo Continuation agent needs to be implemented and added here.
+                Step(name="Continuation", agent=continuation_agent),
             ],
         ),
     ],
