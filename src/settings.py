@@ -23,5 +23,6 @@ class Settings(BaseSettings):
     neo4j_username: str = "neo4j"
     neo4j_password: str = "neo4jpassword"
     podobne_szkolenia_parquet: str = "data_rag/similar_trainings.parquet"
+    faiss_path: str = "data_rag/faiss"
 
 settings = Settings()
