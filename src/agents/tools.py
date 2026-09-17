@@ -65,3 +65,25 @@ def search_program_fragments(query: str) -> str:
     if not docs:
         return "Brak pasujących fragmentów programów."
     return "\n\n".join(f"Plik: {doc.meta['plik']}\n{doc.content}" for doc in docs)
+
+
+def search_related_trainings(query: str) -> str:
+    """Wyszukuje szkolenia semantycznie powiązane z zapytaniem w indeksie Neo4j.
+
+    Indeks jest zbudowany na tych samych danych co katalog, w grafie zawierającym też relacje
+    PODOBNE_DO z sages.pl — dobry wybór, gdy user szuka alternatyw/odpowiedników
+    konkretnego szkolenia, a nie dosłownego dopasowania słów kluczowych.
+
+    Args:
+        query: nazwa lub temat szkolenia, dla którego szukamy powiązanych/podobnych.
+
+    Returns:
+        Powiązane szkolenia: nazwa z opisem, kategoria, liczba dni i link do PDF.
+    """
+    try:
+        docs = _related_searcher().search(query)
+    except IndexNotReadyError as e:
+        return f"Wyszukiwarka powiązanych szkoleń nie jest gotowa: {e}"
+    if not docs:
+        return "Brak powiązanych szkoleń."
+    return _format_courses(docs)
