@@ -20,7 +20,7 @@ def _program_searcher():
 
 @lru_cache
 def _related_searcher():
-    return get_variant("neo4j_neighbors").searcher()
+    return get_variant("neo4j_graph").searcher()
 
 
 def _format_courses(docs: list[Document]) -> str:
