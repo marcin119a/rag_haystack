@@ -18,5 +18,10 @@ class Settings(BaseSettings):
     embedding_model_dimension: int = 1536
     qdrant_collection_pdf: str = "programy_pdf_chunki"
     programy_pdf_dir: str = "data_rag/pdfy"
+    neo4j_url: str = "bolt://localhost:7687"
+    neo4j_database: str = "neo4j"
+    neo4j_username: str = "neo4j"
+    neo4j_password: str = "neo4jpassword"
+    podobne_szkolenia_parquet: str = "data_rag/similar_trainings.parquet"
 
 settings = Settings()
