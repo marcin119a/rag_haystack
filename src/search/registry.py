@@ -51,6 +51,11 @@ _VARIANTS = [
         "Sentence-transformers + BM25 + Neo4j, hybrydowy retriever",
         "search.variants.neo4j_semantic",
     ),
+    Variant(
+        "neo4j_graph",
+        "Sentence-transformers + BM25 + Neo4j Graph, hybrydowy retriever",
+        "search.variants.neo4j_graph",
+    ),
 ]
 
 VARIANTS: dict[str, Variant] = {v.name: v for v in _VARIANTS}
