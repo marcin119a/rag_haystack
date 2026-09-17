@@ -3,6 +3,7 @@ name = "rag-szkolenia"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
+    "agno[openai,sqlite,os]>=3.0.9",
     "chroma-haystack>=4.5.0",
     "faiss-haystack>=2.1.0",
     "fastembed-haystack>=2.7.0",

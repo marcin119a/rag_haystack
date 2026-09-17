@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
     openai_api_key: str = ""
-    openai_model: str = "gpt-4o-mini"
+    openai_model: str = "gpt-5.5"
     embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     openai_embedding_model: str = "text-embedding-3-small"  
     index_path: str = "data_rag/index.json"
@@ -24,5 +24,6 @@ class Settings(BaseSettings):
     neo4j_password: str = "neo4jpassword"
     podobne_szkolenia_parquet: str = "data_rag/similar_trainings.parquet"
     faiss_path: str = "data_rag/faiss"
+    agent_db_path: str = "data_rag/agent_db.sqlite"
 
 settings = Settings()
